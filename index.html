@@ -2385,42 +2385,6 @@ class MangoTrackingApp {
         return dataAge < this.config.cacheExpiry;
     }
     
-    // ======== جلب البيانات الأولية ========
-    async fetchInitialData() {
-        this.showLoader(true);
-        
-        try {
-            // استخدام Promise.all لجلب البيانات بشكل متوازٍ
-            const [mangoData, regionsData, pricesData, forecastsData] = await Promise.all([
-                this.fetchMangoData(),
-                this.fetchRegionsData(),
-                this.fetchPricesData(),
-                this.fetchForecastsData()
-            ]);
-            
-            // تحديث حالة التطبيق
-            this.state.data.mangoDatabase = mangoData;
-            this.state.data.filteredResults = [...mangoData];
-            this.state.data.regions = regionsData;
-            this.state.data.prices = pricesData;
-            this.state.data.forecasts = forecastsData;
-            this.state.ui.lastUpdate = new Date();
-            
-            // حفظ البيانات محلياً
-            this.saveDataLocally();
-            
-            // تحديث الواجهة
-            this.updateDashboard();
-            this.displayResults(this.state.data.filteredResults);
-            
-            console.log('✅ تم تحميل البيانات بنجاح');
-        } catch (error) {
-            console.error('❌ خطأ في جلب البيانات:', error);
-            this.showError('فشل تحميل البيانات، يرجى التحقق من اتصال الإنترنت');
-        } finally {
-            this.showLoader(false);
-        }
-    }
     
     // ======== جلب بيانات المانجو ========
     async fetchMangoData() {
