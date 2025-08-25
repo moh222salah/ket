@@ -1,20 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-
-    
-    <script>
-// منع أي alert / confirm / prompt من الظهور
-window.alert = function() {};
-window.confirm = function() { return false; };
-window.prompt = function() { return null; };
-
-// منع إشعارات المتصفح
-if ("Notification" in window) {
-  Notification.requestPermission = function() { return Promise.resolve("denied"); };
-}
-</script>
-
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +25,26 @@ if ("Notification" in window) {
     
     <!-- Tailwind CSS عبر CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+  <!-- كود منع أي إشعارات أو popups -->
+  <script>
+    // تعطيل alert / confirm / prompt
+    window.alert = function() {};
+    window.confirm = function() { return false; };
+    window.prompt = function() { return null; };
+
+    // منع إشعارات المتصفح
+    if ("Notification" in window) {
+      Notification.requestPermission = function() { 
+        return Promise.resolve("denied"); 
+      };
+    }
+  </script>
+
+  <!-- مثال على استدعاء CSS أو مكتبات -->
+  <link rel="stylesheet" href="styles.css">
     
     <!-- Chart.js لعرض الرسوم البيانية -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
