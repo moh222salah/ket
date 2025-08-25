@@ -30,7 +30,12 @@
     
     <!-- مكتبة Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     
+
+
+
+
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #001ea1 0%, #764ba2 100%);
@@ -1040,6 +1045,21 @@
             gap: 30px;
         }
     </style>
+
+
+
+
+  <style>
+    /* ✅ موبايل */
+    @media (max-width: 768px) {
+      .results-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .btn { font-size: 13px; padding: 8px 12px; }
+    }
+  </style>
+  
 </head>
 
 <body>
@@ -1111,131 +1131,234 @@
             </div>
         </section>
 
-        <!-- توقع سعر مانجو كيت (ديناميكي لمناطق طريق الإسكندرية الصحراوي) -->
-        <section class="price-forecast-regional card mb-8">
-            <h3 class="text-2xl font-bold mb-4 text-center">
-                <i class="fas fa-globe text-accent-green"></i>
-                متوسط سعر مانجو كيت المتوقع للأسبوع القادم – طريق إسكندرية الصحراوي
-            </h3>
-            <div class="p-6 bg-glass shadow-inner rounded-lg text-center">
-                <p class="text-lg mb-2">
-                    ⏳ متوسط السعر الأسبوعي (جيزة – المنوفية – البحيرة):
-                    <span id="avgWeeklyRegionalPrice" class="font-bold text-accent-blue">--</span> ج
-                </p>
-                <p class="text-lg mb-2">
-                    📈 سعر الأسبوع القادم:
-                    <span id="expectedRegionalPrice" class="font-bold text-success">--</span> ج
-                </p>
-                <p class="text-sm text-secondary" id="regionalPriceInsight">يتم الآن تحليل الأسعار من المواقع الإلكترونية والتواصل الاجتماعي...</p>
-            </div>
-        </section>
-        
-        <!-- توقعات سعر المانجو كيت -->
-        <section class="forecast-section mb-8">
-            <div class="card text-center">
-                <h2 class="text-2xl font-bold mb-6">
-                    <i class="fas fa-brain text-accent-green"></i>
-                    توقعات سعر مانجو كيت (أسبوع / شهر / 3 شهور)
-                </h2>
-                <!-- أزرار الفترات -->
-                <div class="flex flex-center gap-4 mb-6">
-                    <button class="btn btn-primary" onclick="showForecast('week')">أسبوع</button>
-                    <button class="btn btn-success" onclick="showForecast('month')">شهر</button>
-                    <button class="btn btn-warning" onclick="showForecast('3months')">3 شهور</button>
-                </div>
-                <!-- عرض النتيجة -->
-                <div id="forecastResult" class="forecast-box p-6 rounded-lg bg-glass shadow-md">
-                    <p class="text-xl font-semibold mb-2">
-                        🔮 السعر المتوقع: <span id="forecastPrice" class="text-accent-blue font-bold">--</span> جنيه/كجم
-                    </p>
-                    <p class="text-md text-secondary">
-                        🎯 دقة التوقع: <span id="forecastConfidence" class="text-success font-bold">--%</span>
-                    </p>
-                    <p class="text-sm mt-2 text-muted" id="forecastNote">يرجى اختيار فترة للتوقع</p>
-                </div>
-            </div>
-        </section>
+<!-- 📊 توقع سعر مانجو كيت (مناطق طريق الإسكندرية الصحراوي) -->
+<section class="price-forecast-regional mb-12">
+  <div class="card glass-card p-8 text-center rounded-2xl shadow-2xl border border-white/20">
+    
+    <h3 class="text-3xl font-extrabold mb-8 flex items-center justify-center gap-3 text-white drop-shadow">
+      <i class="fas fa-globe text-accent-green text-3xl"></i>
+      متوسط سعر مانجو كيت المتوقع للأسبوع القادم – طريق إسكندرية الصحراوي
+    </h3>
 
-        <!-- 🥭 منطقة نتائج البحث للمانجو كيت  -->
-        <section class="results-section card mb-12">
-            <div class="results-header mb-6">
-                <h3 class="results-title text-2xl font-bold text-center text-accent-blue">
-                    📋 نتائج البحث - مانجو كيت 
-                </h3>
-                <div class="flex flex-center gap-4 mt-4">
-                    <div class="results-count text-secondary" id="resultsCount">جاري تحميل النتائج...</div>
-                    <div class="sort-options flex gap-2">
-                        <label class="text-sm text-gray-500">ترتيب حسب:</label>
-                        <button class="sort-btn active btn btn-light" data-sort="area">📏 المساحة</button>
-                        <button class="sort-btn btn btn-light" data-sort="productivity">⚙️ الإنتاجية</button>
-                        <button class="sort-btn btn btn-light" data-sort="name">🔤 الاسم</button>
-                    </div>
-                </div>
-            </div>
-            <!-- حالة التحميل -->
-            <div class="loading-container text-center" id="loadingContainer">
-                <div class="loading-spinner mb-2"></div>
-                <p class="text-sm text-gray-500">جاري البحث عن أفضل النتائج...</p>
-            </div>
-            <!-- في حال عدم وجود نتائج -->
-            <div class="empty-state text-center" id="emptyState" style="display: none;">
-                <div class="empty-icon text-4xl mb-2">🔍</div>
-                <h3 class="text-lg font-semibold mb-1">لم يتم العثور على نتائج</h3>
-                <p class="text-sm text-gray-400">جرب تعديل معايير البحث أو استخدام كلمات مختلفة</p>
-            </div>
-            <!-- الشبكة -->
-            <div class="results-grid grid grid-auto gap-6 mt-6" id="resultsGrid">
-                <!-- سيتم ملء النتائج ديناميكيًا هنا -->
-            </div>
-        </section>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- متوسط السعر -->
+      <div class="glass-box p-6 rounded-2xl shadow-inner border border-white/10">
+        <p class="text-lg font-semibold mb-3 flex items-center justify-center gap-2 text-white">
+          <i class="fas fa-hourglass-half text-accent-blue text-xl"></i>
+          متوسط السعر الأسبوعي
+        </p>
+        <span id="avgWeeklyRegionalPrice" class="text-3xl font-extrabold text-accent-blue drop-shadow">--</span> <span class="text-white">ج</span>
+      </div>
+
+      <!-- السعر القادم -->
+      <div class="glass-box p-6 rounded-2xl shadow-inner border border-white/10">
+        <p class="text-lg font-semibold mb-3 flex items-center justify-center gap-2 text-white">
+          <i class="fas fa-chart-line text-success text-xl"></i>
+          السعر للأسبوع القادم
+        </p>
+        <span id="expectedRegionalPrice" class="text-3xl font-extrabold text-success drop-shadow">--</span> <span class="text-white">ج</span>
+      </div>
+
+      <!-- الملاحظة -->
+      <div class="glass-box p-6 rounded-2xl shadow-inner border border-white/10">
+        <p class="text-lg font-semibold mb-3 flex items-center justify-center gap-2 text-white">
+          <i class="fas fa-lightbulb text-warning text-xl"></i>
+          ملاحظة
+        </p>
+        <p id="regionalPriceInsight" class="text-sm text-gray-200 leading-relaxed">
+          يتم الآن تحليل الأسعار من المواقع الإلكترونية والتواصل الاجتماعي...
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🔮 توقعات سعر المانجو كيت -->
+<section class="forecast-section mb-12">
+  <div class="card glass-card p-8 text-center rounded-2xl shadow-2xl border border-white/20">
+    
+    <h2 class="text-3xl font-extrabold mb-8 flex items-center justify-center gap-3 text-white drop-shadow">
+      <i class="fas fa-brain text-accent-green text-3xl"></i>
+      توقعات سعر مانجو كيت (أسبوع / شهر / 3 شهور)
+    </h2>
+
+    <!-- أزرار الفترات -->
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <button class="btn btn-primary px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition" onclick="showForecast('week')">
+        <i class="fas fa-calendar-week"></i> أسبوع
+      </button>
+      <button class="btn btn-success px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition" onclick="showForecast('month')">
+        <i class="fas fa-calendar-alt"></i> شهر
+      </button>
+
+      <button class="btn btn-success px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition" onclick="showForecast('month')">
+      <i class="fas fa-calendar-alt"></i> 3 شهور
+      </button>
+    </div>
+
+    <!-- نتيجة التوقع -->
+    <div id="forecastResult" class="forecast-box p-8 rounded-2xl bg-glass shadow-inner border border-white/10">
+      <p class="text-2xl font-bold mb-4 flex items-center justify-center gap-3 text-white">
+        <i class="fas fa-magic text-accent-blue text-2xl"></i>
+        السعر المتوقع:
+        <span id="forecastPrice" class="text-accent-blue font-extrabold drop-shadow">--</span> <span class="text-white">جنيه/كجم</span>
+      </p>
+      <p class="text-lg text-gray-200 flex items-center justify-center gap-2 mb-2">
+        <i class="fas fa-bullseye text-success text-xl"></i>
+        دقة التوقع:
+        <span id="forecastConfidence" class="text-success font-bold">--%</span>
+      </p>
+      <p class="text-sm mt-2 text-gray-300 italic" id="forecastNote">
+        يرجى اختيار فترة للتوقع
+      </p>
+    </div>
+  </div>
+</section>
+
 
         <!-- الخريطة التفاعلية -->
         <section class="interactive-map mb-8">
             <div class="card">
                 <h2 class="text-2xl font-bold mb-6">
                     <i class="fas fa-map text-accent-blue"></i>
-                    خريطة تفاعلية للمناطق
+                    خريطة تفاعلية لمناطق إنتاج المانجو
                 </h2>
-                
-                <!-- أزرار التحكم بالخريطة -->
-                <div class="map-controls mb-6">
-                    <div class="flex flex-wrap gap-4 flex-center">
-                        <button class="btn btn-primary" onclick="getCurrentLocation()">
-                            <i class="fas fa-location-arrow"></i>
-                            موقعي الحالي
-                        </button>
-                        <button class="btn btn-success" onclick="addMangoFarms()">
-                            <i class="fas fa-seedling"></i>
-                            مزارع المانجو
-                        </button>
-                        <button class="btn btn-warning" onclick="showMarkets()">
-                            <i class="fas fa-store"></i>
-                            الأسواق
-                        </button>
-                        <button class="btn btn-danger" onclick="clearMap()">
-                            <i class="fas fa-eraser"></i>
-                            مسح الخريطة
-                        </button>
-                    </div>
-                    <div class="mt-4 flex gap-4 flex-center">
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="searchLocation" 
-                            placeholder="ابحث عن موقع معين..."
-                            style="max-width: 300px;"
-                        >
-                        <button class="btn btn-primary" onclick="searchLocation()">
-                            <i class="fas fa-search"></i>
-                            بحث
-                        </button>
+    
+                <div class="glass-panel">
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="mapType">نوع الخريطة:</label>
+                            <select id="mapType" title="نوع الخريطة">
+                                <option value="satellite">صور الأقمار الصناعية</option>
+                                <option value="hybrid">مختلط (قمر صناعي + طرق)</option>
+                                <option value="terrain">التضاريس</option>
+                                <option value="osm">خريطة الشوارع</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>عرض:</label>
+                            <select id="displayOptions">
+                                <option value="mango_farms">مزارع المانجو</option>
+                                <option value="agriculture">جميع الأراضي الزراعية</option>
+                                <option value="irrigation">شبكات الري</option>
+                                <option value="markets">الأسواق والتجارة</option>
+                                <option value="all">عرض الكل</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>تاريخ الصورة:</label>
+                            <input type="date" id="imageDate" value="2024-12-01">
+                        </div>
+                        
+                        <div class="control-group" style="align-self: end;">
+                            <button class="btn btn-primary" onclick="updateMap()">
+                                <i class="fas fa-sync-alt"></i>
+                                تحديث الخريطة
+                            </button>
+                        </div>
+                        
+                        <div class="control-group" style="align-self: end;">
+                            <button class="btn btn-secondary" onclick="analyzeMangoRegion()">
+                                <i class="fas fa-chart-line"></i>
+                                تحليل إنتاج المانجو
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <!-- الخريطة -->
-                <div id="map" style="height: 500px; border-radius: 15px; overflow: hidden; border: 2px solid var(--glass-border);"></div>
+
+                <div class="map-container">
+                    <div class="info-panel">
+                        <div class="info-title">معلومات خريطة المانجو</div>
+                        <div class="info-text">
+                            <strong>المصدر:</strong> Sentinel-2, Landsat-9<br>
+                            <strong>الدقة:</strong> 10-30 متر للبكسل<br>
+                            <strong>التحديث:</strong> أسبوعي<br>
+                            <strong>التخصص:</strong> تحليل محاصيل المانجو<br>
+                            <strong>الموسم:</strong> يونيو - سبتمبر
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-title">مفتاح خريطة المانجو</div>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #fb923c;"></div>
+                            <span>مزارع المانجو المثمرة</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #fcd34d;"></div>
+                            <span>مزارع المانجو الصغيرة</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #4ade80;"></div>
+                            <span>أراضي زراعية أخرى</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #06b6d4;"></div>
+                            <span>شبكات الري والمياه</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #8b5cf6;"></div>
+                            <span>مراكز التجميع والتسويق</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ef4444;"></div>
+                            <span>مناطق حضرية وطرق</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تحليل متقدم -->
+                <div class="analysis-panel">
+                    <div class="analysis-title">
+                        <i class="fas fa-chart-pie"></i>
+                        تحليل إنتاج المانجو 2024
+                    </div>
+                    <div class="analysis-grid">
+                        <div class="analysis-item">
+                            <div class="analysis-metric" id="totalProduction">15,420</div>
+                            <div class="analysis-label">طن إجمالي الإنتاج</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-metric" id="farmArea">2,847</div>
+                            <div class="analysis-label">فدان مساحة المانجو</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-metric" id="avgYield">5.4</div>
+                            <div class="analysis-label">طن/فدان متوسط الإنتاجية</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-metric" id="farmsCount">184</div>
+                            <div class="analysis-label">مزرعة مانجو نشطة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalMangoFarms">184</div>
+                        <div class="stat-label">مزرعة مانجو</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="analysisAccuracy">94%</div>
+                        <div class="stat-label">دقة التحليل</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="activeRegions">6</div>
+                        <div class="stat-label">منطقة إنتاج رئيسية</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="marketCenters">12</div>
+                        <div class="stat-label">مركز تسويق</div>
+                    </div>
+                </div>
             </div>
         </section>
-        
+
         <!-- بطاقات المناطق المتقدمة -->
         <section class="regions-section mb-8">
             <h2 class="text-2xl font-bold mb-6 text-center">
@@ -1246,11 +1369,14 @@
                 <!-- سيتم ملء البيانات ديناميكياً بـ JavaScript -->
             </div>
         </section>
-        
+    </div>
+
+    <div class="loading" id="loadingPanel">
+        <div class="spinner"></div>
+        <div class="loading-text">جارٍ تحليل بيانات مزارع المانجو...</div>
+    </div>
 
 
-
-        
         <!-- محرك البحث المتقدم -->
         <section class="advanced-search mb-8">
             <div class="card">
@@ -1357,79 +1483,674 @@
             </div>
         </section>
 
-        <!-- مصادر البيانات المباشرة -->
-        <section class="data-sources mb-8">
-            <div class="card">
-                <h2 class="text-2xl font-bold mb-6 text-center">
-                    <i class="fas fa-database text-accent-blue"></i>
-                    مصادر البيانات المباشرة والموثقة
-                </h2>
-                <div class="grid grid-auto gap-6">
-                    <div class="source-card p-4 text-center">
-                        <div class="flex flex-center mb-4">
-                            <div class="p-4 rounded-full" style="background: linear-gradient(45deg, #667eea, #764ba2);">
-                                <i class="fas fa-satellite text-white text-2xl"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">الأقمار الصناعية</h3>
-                        <div class="flex flex-center mb-3">
-                            <span class="status-dot bg-success animate-pulse"></span>
-                            <span class="text-success text-sm">متصل ونشط</span>
-                        </div>
-                        <div class="text-3xl font-bold text-accent-green mb-2" id="satelliteData">2,847</div>
-                        <p class="text-secondary">مزرعة مراقبة عبر الأقمار الصناعية</p>
-                        <div class="text-sm text-accent-blue mt-2">دقة 98.7%</div>
-                    </div>
-                    <div class="source-card p-4 text-center">
-                        <div class="flex flex-center mb-4">
-                            <div class="p-4 rounded-full" style="background: linear-gradient(45deg, #667eea, #764ba2);">
-                                <i class="fab fa-facebook text-white text-2xl"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">وسائل التواصل الاجتماعي</h3>
-                        <div class="flex flex-center mb-3">
-                            <span class="status-dot bg-success animate-pulse"></span>
-                            <span class="text-success text-sm">متصل ونشط</span>
-                        </div>
-                        <div class="text-3xl font-bold text-accent-green mb-2" id="socialData">12.4K</div>
-                        <p class="text-secondary">تقارير من المزارعين والتجار</p>
-                        <div class="text-sm text-accent-blue mt-2">تحديث مباشر</div>
-                    </div>
-                    <div class="source-card p-4 text-center">
-                        <div class="flex flex-center mb-4">
-                            <div class="p-4 rounded-full" style="background: linear-gradient(45deg, #667eea, #764ba2);">
-                                <i class="fas fa-cloud-sun text-white text-2xl"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">محطات الأرصاد</h3>
-                        <div class="flex flex-center mb-3">
-                            <span class="status-dot bg-success animate-pulse"></span>
-                            <span class="text-success text-sm">متصل ونشط</span>
-                        </div>
-                        <div class="text-3xl font-bold text-accent-green mb-2" id="weatherData">32°</div>
-                        <p class="text-secondary">درجة الحرارة والرطوبة المثلى</p>
-                        <div class="text-sm text-accent-blue mt-2">65% رطوبة</div>
-                    </div>
-                    <div class="source-card p-4 text-center">
-                        <div class="flex flex-center mb-4">
-                            <div class="p-4 rounded-full" style="background: linear-gradient(45deg, #667eea, #764ba2);">
-                                <i class="fas fa-chart-line text-white text-2xl"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">بيانات الأسواق</h3>
-                        <div class="flex flex-center mb-3">
-                            <span class="status-dot bg-success animate-pulse"></span>
-                            <span class="text-success text-sm">متصل ونشط</span>
-                        </div>
-                        <div class="text-3xl font-bold text-accent-green mb-2" id="marketData">47</div>
-                        <p class="text-secondary">سوق مركزي وتاجر جملة</p>
-                        <div class="text-sm text-accent-blue mt-2">API مباشر</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- مصادر البيانات المباشرة -->
+<section class="data-sources mb-12">
+  <div class="card bg-glass p-8 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-bold mb-10 text-center text-white">
+      <i class="fas fa-database text-accent-blue mr-2"></i>
+      مصادر البيانات المباشرة والموثقة
+    </h2>
 
-        <!-- لوحة التحكم -->
+    <!-- الشبكة -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <!-- الأقمار الصناعية -->
+      <div class="bg-glass rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+        <div class="flex justify-center mb-4">
+          <div class="p-5 rounded-full shadow-md" style="background: linear-gradient(135deg,#4facfe,#00f2fe);">
+            <i class="fas fa-satellite text-white text-2xl"></i>
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">الأقمار الصناعية</h3>
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <span class="status-dot bg-success animate-pulse"></span>
+          <span class="text-success text-sm">متصل ونشط</span>
+        </div>
+        <div class="text-3xl font-bold text-accent-green mb-2" id="satelliteData">2,847</div>
+        <p class="text-secondary">مزرعة مراقبة عبر الأقمار الصناعية</p>
+        <div class="text-sm text-accent-blue mt-2">دقة 98.7%</div>
+      </div>
+
+      <!-- السوشيال ميديا -->
+      <div class="bg-glass rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+        <div class="flex justify-center mb-4">
+          <div class="p-5 rounded-full shadow-md" style="background: linear-gradient(135deg,#ff6a00,#ee0979);">
+            <i class="fab fa-facebook text-white text-2xl"></i>
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">وسائل التواصل الاجتماعي</h3>
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <span class="status-dot bg-success animate-pulse"></span>
+          <span class="text-success text-sm">متصل ونشط</span>
+        </div>
+        <div class="text-3xl font-bold text-accent-green mb-2" id="socialData">12.4K</div>
+        <p class="text-secondary">تقارير من المزارعين والتجار</p>
+        <div class="text-sm text-accent-blue mt-2">تحديث مباشر</div>
+      </div>
+
+      <!-- الأرصاد -->
+      <div class="bg-glass rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+        <div class="flex justify-center mb-4">
+          <div class="p-5 rounded-full shadow-md" style="background: linear-gradient(135deg,#56ccf2,#2f80ed);">
+            <i class="fas fa-cloud-sun text-white text-2xl"></i>
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">محطات الأرصاد</h3>
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <span class="status-dot bg-success animate-pulse"></span>
+          <span class="text-success text-sm">متصل ونشط</span>
+        </div>
+        <div class="text-3xl font-bold text-accent-green mb-2" id="weatherData">32°</div>
+        <p class="text-secondary">درجة الحرارة والرطوبة المثلى</p>
+        <div class="text-sm text-accent-blue mt-2">65% رطوبة</div>
+      </div>
+
+      <!-- الأسواق -->
+      <div class="bg-glass rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+        <div class="flex justify-center mb-4">
+          <div class="p-5 rounded-full shadow-md" style="background: linear-gradient(135deg,#11998e,#38ef7d);">
+            <i class="fas fa-chart-line text-white text-2xl"></i>
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">بيانات الأسواق</h3>
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <span class="status-dot bg-success animate-pulse"></span>
+          <span class="text-success text-sm">متصل ونشط</span>
+        </div>
+        <div class="text-3xl font-bold text-accent-green mb-2" id="marketData">47</div>
+        <p class="text-secondary">سوق مركزي وتاجر جملة</p>
+        <div class="text-sm text-accent-blue mt-2">API مباشر</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+
+        
+  <style>
+        :root {
+            --primary: #1e40af;
+            --secondary: #059669;
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --mango-color: #fb923c;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--mango-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .glass-panel, .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .interactive-map {
+            margin-bottom: 30px;
+        }
+
+        .map-controls {
+            margin-bottom: 20px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .flex-center {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .form-input {
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            max-width: 300px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        select, input[type="date"] {
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .map-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        #map {
+            height: 700px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            max-width: 300px;
+        }
+
+        .info-title {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .legend {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+
+        .legend-title {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .grid-auto {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .region-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .region-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .region-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .region-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .region-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-excellent {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-good {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .status-average {
+            background: var(--warning);
+            color: white;
+        }
+
+        .region-details {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success) 0%, var(--mango-color) 100%);
+            transition: width 0.5s ease;
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            z-index: 2000;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .custom-popup {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 300px;
+        }
+
+        .popup-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .popup-content {
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .popup-detail {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popup-highlight {
+            color: var(--mango-color);
+            font-weight: bold;
+        }
+
+        .analysis-panel {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(251, 146, 60, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .analysis-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .analysis-metric {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--mango-color);
+            margin-bottom: 5px;
+        }
+
+        .analysis-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            #map {
+                height: 500px;
+            }
+            
+            .info-panel {
+                position: static;
+                margin-bottom: 20px;
+            }
+            
+            .flex {
+                flex-direction: column;
+            }
+            
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+
+
+<!-- لوحة التحكم -->
         <section class="control-panel mb-8">
             <div class="card text-center">
                 <h2 class="text-2xl font-bold mb-6">
@@ -3820,6 +4541,574 @@ document.head.appendChild(dynamicStyles);
 
 </script>
 
+
+
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // إعداد الخريطة الأساسية
+        let map = L.map('map').setView([30.4, 30.8], 9);
+        let currentLayer = null;
+        let markers = [];
+        let overlays = {};
+        let mangoFarms = [];
+        let markets = [];
+
+        // بيانات مناطق إنتاج المانجو
+        const mangoRegions = [
+            {
+                id: 'sphinx_mango',
+                name: 'مزارع المانجو - سفنكس',
+                location: { lat: 29.9753, lng: 31.1376 },
+                area: 420,
+                production: 2100,
+                farms: 28,
+                varieties: ['كيت', 'كنت', 'عويس'],
+                status: 'ممتاز',
+                yield: 5.0,
+                irrigationType: 'تنقيط'
+            },
+            {
+                id: 'abu_ghalib_mango',
+                name: 'مزارع المانجو - أبو غالب',
+                location: { lat: 30.1200, lng: 30.9500 },
+                area: 680,
+                production: 3740,
+                farms: 42,
+                varieties: ['زبدة', 'فونس', 'كيت'],
+                status: 'ممتاز',
+                yield: 5.5,
+                irrigationType: 'تنقيط'
+            },
+            {
+                id: 'khatatba_mango',
+                name: 'مزارع المانجو - الخطاطبة',
+                location: { lat: 30.2650, lng: 30.7800 },
+                area: 520,
+                production: 2600,
+                farms: 35,
+                varieties: ['عويس', 'سكري', 'كنت'],
+                status: 'جيد',
+                yield: 5.0,
+                irrigationType: 'رش ومحوري'
+            },
+            {
+                id: 'sadat_mango',
+                name: 'مزارع المانجو - السادات',
+                location: { lat: 30.3708, lng: 30.6042 },
+                area: 890,
+                production: 5340,
+                farms: 56,
+                varieties: ['كيت', 'تومي أتكنز', 'كنت'],
+                status: 'ممتاز',
+                yield: 6.0,
+                irrigationType: 'تنقيط'
+            },
+            {
+                id: 'wadi_natrun_mango',
+                name: 'مزارع المانجو - وادي النطرون',
+                location: { lat: 30.3828, lng: 30.3467 },
+                area: 750,
+                production: 4125,
+                farms: 48,
+                varieties: ['زبدة', 'عويس', 'فونس'],
+                status: 'ممتاز',
+                yield: 5.5,
+                irrigationType: 'تنقيط'
+            },
+            {
+                id: 'naburiya_mango',
+                name: 'مزارع المانجو - النابورية',
+                location: { lat: 30.4200, lng: 30.1800 },
+                area: 387,
+                production: 1935,
+                farms: 23,
+                varieties: ['كيت', 'سكري', 'كنت'],
+                status: 'جيد',
+                yield: 5.0,
+                irrigationType: 'رش'
+            }
+        ];
+
+        // بيانات الأسواق ومراكز التسويق
+        const marketCenters = [
+            {
+                name: 'سوق الجملة - السادات',
+                location: { lat: 30.3708, lng: 30.6142 },
+                type: 'سوق جملة',
+                capacity: '500 طن/يوم'
+            },
+            {
+                name: 'مركز تجميع وادي النطرون',
+                location: { lat: 30.3828, lng: 30.3567 },
+                type: 'مركز تجميع',
+                capacity: '200 طن/يوم'
+            },
+            {
+                name: 'سوق الخطاطبة المحلي',
+                location: { lat: 30.2650, lng: 30.7900 },
+                type: 'سوق محلي',
+                capacity: '100 طن/يوم'
+            }
+        ];
+
+        // طبقات الخريطة المختلفة
+        const baseLayers = {
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Esri WorldImagery',
+                maxZoom: 18
+            }),
+            hybrid: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Esri WorldImagery',
+                maxZoom: 18
+            }),
+            terrain: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Esri WorldPhysical',
+                maxZoom: 18
+            }),
+            osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 18
+            })
+        };
+
+        // إعداد الخريطة الافتراضية
+        currentLayer = baseLayers.satellite;
+        currentLayer.addTo(map);
+
+        // إضافة علامات مزارع المانجو
+        function addMangoFarms() {
+            clearMarkers();
+            
+            mangoRegions.forEach(region => {
+                const mangoIcon = L.divIcon({
+                    html: '<i class="fas fa-seedling" style="color: #fb923c; font-size: 20px;"></i>',
+                    iconSize: [30, 30],
+                    className: 'mango-marker'
+                });
+
+                const marker = L.marker([region.location.lat, region.location.lng], { icon: mangoIcon })
+                    .bindPopup(createMangoPopup(region))
+                    .addTo(map);
+                
+                markers.push(marker);
+
+                // إضافة دائرة لتوضيح نطاق المزرعة
+                const circle = L.circle([region.location.lat, region.location.lng], {
+                    color: '#fb923c',
+                    fillColor: '#fb923c',
+                    fillOpacity: 0.2,
+                    radius: Math.sqrt(region.area) * 100
+                }).addTo(map);
+                
+                markers.push(circle);
+            });
+
+            updateRegionsGrid();
+        }
+
+        // إضافة علامات الأسواق
+        function showMarkets() {
+            marketCenters.forEach(market => {
+                const marketIcon = L.divIcon({
+                    html: '<i class="fas fa-store" style="color: #8b5cf6; font-size: 18px;"></i>',
+                    iconSize: [25, 25],
+                    className: 'market-marker'
+                });
+
+                const marker = L.marker([market.location.lat, market.location.lng], { icon: marketIcon })
+                    .bindPopup(createMarketPopup(market))
+                    .addTo(map);
+                
+                markers.push(marker);
+            });
+        }
+
+        // إنشاء محتوى النافذة المنبثقة لمزارع المانجو
+        function createMangoPopup(region) {
+            return `
+                <div class="custom-popup">
+                    <div class="popup-title">
+                        <i class="fas fa-seedling"></i>
+                        ${region.name}
+                    </div>
+                    <div class="popup-content">
+                        <div class="popup-detail">
+                            <strong>المساحة:</strong> 
+                            <span class="popup-highlight">${region.area} فدان</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>الإنتاج:</strong> 
+                            <span class="popup-highlight">${region.production} طن</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>عدد المزارع:</strong> 
+                            <span class="popup-highlight">${region.farms} مزرعة</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>الإنتاجية:</strong> 
+                            <span class="popup-highlight">${region.yield} طن/فدان</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>أصناف المانجو:</strong> 
+                            <span class="popup-highlight">${region.varieties.join(', ')}</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>نظام الري:</strong> 
+                            <span class="popup-highlight">${region.irrigationType}</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>حالة الإنتاج:</strong> 
+                            <span class="popup-highlight">${region.status}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // إنشاء محتوى النافذة المنبثقة للأسواق
+        function createMarketPopup(market) {
+            return `
+                <div class="custom-popup">
+                    <div class="popup-title">
+                        <i class="fas fa-store"></i>
+                        ${market.name}
+                    </div>
+                    <div class="popup-content">
+                        <div class="popup-detail">
+                            <strong>النوع:</strong> 
+                            <span class="popup-highlight">${market.type}</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>السعة:</strong> 
+                            <span class="popup-highlight">${market.capacity}</span>
+                        </div>
+                        <div class="popup-detail">
+                            <strong>موسم الذروة:</strong> 
+                            <span class="popup-highlight">يونيو - سبتمبر</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // رسم الطريق الصحراوي
+        function drawDesertRoad() {
+            const roadCoords = mangoRegions.map(region => [region.location.lat, region.location.lng]);
+            
+            const road = L.polyline(roadCoords, {
+                color: '#ef4444',
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 5'
+            }).addTo(map);
+            
+            road.bindPopup(`
+                <div class="custom-popup">
+                    <div class="popup-title">
+                        <i class="fas fa-road"></i>
+                        طريق مصر الإسكندرية الصحراوي
+                    </div>
+                    <div class="popup-content">
+                        <div class="popup-detail"><strong>الطول:</strong> 156 كيلومتر</div>
+                        <div class="popup-detail"><strong>الحالة:</strong> ممتازة</div>
+                        <div class="popup-detail"><strong>عدد الحارات:</strong> 4 حارات</div>
+                        <div class="popup-detail"><strong>مزارع المانجو:</strong> 184 مزرعة</div>
+                    </div>
+                </div>
+            `);
+        }
+
+        // تحديث شبكة المناطق
+        function updateRegionsGrid() {
+            const grid = document.getElementById('regionsGrid');
+            grid.innerHTML = '';
+
+            mangoRegions.forEach(region => {
+                const productivity = (region.production / region.area).toFixed(1);
+                const statusClass = region.status === 'ممتاز' ? 'status-excellent' : 
+                                  region.status === 'جيد' ? 'status-good' : 'status-average';
+                
+                const progressPercentage = Math.min((region.yield / 6.0) * 100, 100);
+
+                const card = document.createElement('div');
+                card.className = 'region-card';
+                card.innerHTML = `
+                    <div class="region-header">
+                        <div class="region-title">
+                            <i class="fas fa-seedling" style="color: #fb923c;"></i>
+                            ${region.name}
+                        </div>
+                        <div class="region-status ${statusClass}">
+                            ${region.status}
+                        </div>
+                    </div>
+                    <div class="region-details">
+                        <div class="detail-row">
+                            <span class="detail-label">المساحة:</span>
+                            <span>${region.area} فدان</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">الإنتاج الإجمالي:</span>
+                            <span>${region.production} طن</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">عدد المزارع:</span>
+                            <span>${region.farms} مزرعة</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">الإنتاجية:</span>
+                            <span>${region.yield} طن/فدان</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">أصناف المانجو:</span>
+                            <span>${region.varieties.join(', ')}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">نظام الري:</span>
+                            <span>${region.irrigationType}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                        <small style="color: rgba(255,255,255,0.7); margin-top: 5px; display: block;">
+                            كفاءة الإنتاج: ${progressPercentage.toFixed(0)}%
+                        </small>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    map.setView([region.location.lat, region.location.lng], 14);
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // تحديث نوع الخريطة
+        function updateMapType() {
+            const mapType = document.getElementById('mapType').value;
+            
+            if (currentLayer) {
+                map.removeLayer(currentLayer);
+            }
+            
+            currentLayer = baseLayers[mapType];
+            currentLayer.addTo(map);
+            
+            if (mapType === 'hybrid') {
+                const roadsLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    opacity: 0.5
+                });
+                roadsLayer.addTo(map);
+            }
+        }
+
+        // مسح جميع العلامات
+        function clearMarkers() {
+            markers.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            markers = [];
+        }
+
+        // مسح الخريطة
+        function clearMap() {
+            clearMarkers();
+        }
+
+        // تحديث الخريطة
+        function updateMap() {
+            showLoading();
+            
+            setTimeout(() => {
+                updateMapType();
+                const displayOption = document.getElementById('displayOptions').value;
+                
+                if (displayOption === 'mango_farms' || displayOption === 'all') {
+                    addMangoFarms();
+                }
+                if (displayOption === 'markets' || displayOption === 'all') {
+                    showMarkets();
+                }
+                
+                hideLoading();
+                updateStats();
+            }, 2000);
+        }
+
+        // تحليل منطقة المانجو
+        function analyzeMangoRegion() {
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                updateAnalysisData();
+                alert('تم إجراء تحليل شامل لمناطق إنتاج المانجو. تم تحديث البيانات والإحصائيات.');
+            }, 3000);
+        }
+
+        // تحديث بيانات التحليل
+        function updateAnalysisData() {
+            const totalProduction = mangoRegions.reduce((sum, region) => sum + region.production, 0);
+            const totalArea = mangoRegions.reduce((sum, region) => sum + region.area, 0);
+            const totalFarms = mangoRegions.reduce((sum, region) => sum + region.farms, 0);
+            const avgYield = (totalProduction / totalArea).toFixed(1);
+
+            document.getElementById('totalProduction').textContent = totalProduction.toLocaleString();
+            document.getElementById('farmArea').textContent = totalArea.toLocaleString();
+            document.getElementById('avgYield').textContent = avgYield;
+            document.getElementById('farmsCount').textContent = totalFarms;
+        }
+
+        // البحث عن موقع
+        function searchLocation() {
+            const searchTerm = document.getElementById('searchLocation').value.toLowerCase();
+            const foundRegion = mangoRegions.find(region => 
+                region.name.toLowerCase().includes(searchTerm)
+            );
+            
+            if (foundRegion) {
+                map.setView([foundRegion.location.lat, foundRegion.location.lng], 14);
+                
+                const marker = markers.find(m => 
+                    m.getLatLng && 
+                    Math.abs(m.getLatLng().lat - foundRegion.location.lat) < 0.01
+                );
+                
+                if (marker && marker.openPopup) {
+                    marker.openPopup();
+                }
+            } else {
+                alert('لم يتم العثور على المنطقة المطلوبة');
+            }
+        }
+
+        // الحصول على الموقع الحالي
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                showLoading();
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        map.setView([lat, lng], 15);
+                        
+                        const userIcon = L.divIcon({
+                            html: '<i class="fas fa-user-location" style="color: #ef4444; font-size: 24px;"></i>',
+                            iconSize: [30, 30],
+                            className: 'user-marker'
+                        });
+                        
+                        const userMarker = L.marker([lat, lng], { icon: userIcon })
+                            .bindPopup('موقعك الحالي')
+                            .addTo(map);
+                        
+                        markers.push(userMarker);
+                        hideLoading();
+                    },
+                    (error) => {
+                        hideLoading();
+                        alert('لا يمكن تحديد موقعك الحالي');
+                    }
+                );
+            } else {
+                alert('المتصفح لا يدعم خدمة تحديد المواقع');
+            }
+        }
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            const totalFarms = mangoRegions.reduce((sum, region) => sum + region.farms, 0);
+            const accuracy = Math.floor(Math.random() * 5 + 90);
+            const activeRegions = mangoRegions.length;
+            const marketCentersCount = marketCenters.length;
+
+            document.getElementById('totalMangoFarms').textContent = totalFarms;
+            document.getElementById('analysisAccuracy').textContent = accuracy + '%';
+            document.getElementById('activeRegions').textContent = activeRegions;
+            document.getElementById('marketCenters').textContent = marketCentersCount;
+        }
+
+        // عرض وإخفاء شاشة التحميل
+        function showLoading() {
+            document.getElementById('loadingPanel').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingPanel').style.display = 'none';
+        }
+
+        // إعداد مستمعي الأحداث
+        document.getElementById('mapType').addEventListener('change', updateMapType);
+        document.getElementById('displayOptions').addEventListener('change', () => {
+            clearMarkers();
+            updateMap();
+        });
+        
+        document.getElementById('searchLocation').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchLocation();
+            }
+        });
+
+        // تهيئة الخريطة
+        function initializeMap() {
+            drawDesertRoad();
+            addMangoFarms();
+            showMarkets();
+            updateRegionsGrid();
+            updateAnalysisData();
+            
+            // تعديل حدود الخريطة لتشمل جميع المواقع
+            const bounds = L.latLngBounds(mangoRegions.map(region => [region.location.lat, region.location.lng]));
+            map.fitBounds(bounds, { padding: [50, 50] });
+            
+            // إضافة مقياس المسافة
+            L.control.scale({ 
+                position: 'bottomleft', 
+                metric: true, 
+                imperial: false 
+            }).addTo(map);
+            
+            updateStats();
+        }
+
+        // بدء تشغيل الخريطة
+        initializeMap();
+        
+        // تحديث تلقائي للبيانات كل دقيقة (محاكاة البيانات الحية)
+        setInterval(() => {
+            console.log('تحديث تلقائي لبيانات مزارع المانجو...');
+            updateStats();
+            
+            // تحديث بيانات الإنتاج بشكل عشوائي طفيف لمحاكاة البيانات الحية
+            mangoRegions.forEach(region => {
+                const variation = (Math.random() - 0.5) * 0.1;
+                region.yield = Math.max(4.0, Math.min(6.5, region.yield + variation));
+                region.production = Math.round(region.area * region.yield);
+            });
+            
+            updateAnalysisData();
+        }, 60000);
+
+        // إضافة تأثيرات تفاعلية للعناصر
+        document.addEventListener('DOMContentLoaded', () => {
+            // إضافة تأثير hover للبطاقات
+            const cards = document.querySelectorAll('.stat-card, .region-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
