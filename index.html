@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="نظام تتبع المانجو الكيت المتقدم - تتبع مباشر للمزارع والأسعار والإنتاجية">
@@ -22,11 +21,8 @@
     
     <!-- مكتبة Leaflet للخرائط التفاعلية -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     
-    <!-- Tailwind CSS عبر CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-
 
   <!-- كود منع أي إشعارات أو popups -->
   <script>
@@ -45,6 +41,9 @@
 
   <!-- مثال على استدعاء CSS أو مكتبات -->
   <link rel="stylesheet" href="styles.css">
+
+    <!-- Tailwind CSS عبر CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Chart.js لعرض الرسوم البيانية -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -1098,59 +1097,75 @@
             </p>
         </header>
         
-        <!-- لوحة المعلومات الرئيسية -->
-        <section class="status-overview mb-8">
-            <div class="card">
-                <h2 class="text-2xl font-bold mb-6 text-center">
-                    <i class="fas fa-chart-pie text-accent-green"></i>
-                    لوحة المعلومات الرئيسية
-                </h2>
-                <div class="grid grid-auto gap-6">
-                    <div class="stat-card text-center p-4">
-                        <div class="stat-icon mb-4">
-                            <i class="fas fa-map-marker-alt text-accent-blue text-3xl"></i>
-                        </div>
-                        <div class="stat-value text-3xl font-bold text-accent-green" id="totalRegions">847</div>
-                        <div class="stat-label text-secondary">إجمالي المناطق المنتجة</div>
-                    </div>
-                    <div class="stat-card text-center p-4">
-                        <div class="stat-icon mb-4">
-                            <i class="fas fa-check-circle text-success text-3xl"></i>
-                        </div>
-                        <div class="stat-value text-3xl font-bold text-success" id="availableCount">568</div>
-                        <div class="stat-label text-secondary">متوفر للحصاد</div>
-                    </div>
-                    <div class="stat-card text-center p-4">
-                        <div class="stat-icon mb-4">
-                            <i class="fas fa-tractor text-warning text-3xl"></i>
-                        </div>
-                        <div class="stat-value text-3xl font-bold text-warning" id="totalFarms">2,847</div>
-                        <div class="stat-label text-secondary">عدد المزارع المسجلة</div>
-                    </div>
-                    <div class="stat-card text-center p-4">
-                        <div class="stat-icon mb-4">
-                            <i class="fas fa-weight-hanging text-accent-blue text-3xl"></i>
-                        </div>
-                        <div class="stat-value text-3xl font-bold text-accent-blue" id="totalQuantity">680,400</div>
-                        <div class="stat-label text-secondary">الإنتاج المتوقع (طن)</div>
-                    </div>
-                    <div class="stat-card text-center p-4">
-                        <div class="stat-icon mb-4">
-                            <i class="fas fa-coins text-warning text-3xl"></i>
-                        </div>
-                        <div class="stat-value text-3xl font-bold text-warning" id="averagePrice">47.50</div>
-                        <div class="stat-label text-secondary">متوسط السعر (جنيه/كيلو)</div>
-                    </div>
-                    <div class="stat-card text-center p-4">
-                        <div class="stat-icon mb-4">
-                            <i class="fas fa-clock text-accent-green text-3xl"></i>
-                        </div>
-                        <div class="stat-value text-3xl font-bold text-accent-green" id="lastUpdate">الآن</div>
-                        <div class="stat-label text-secondary">آخر تحديث</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- لوحة المعلومات الرئيسية -->
+<section class="status-overview mb-8">
+  <div class="card glass-card p-8 rounded-2xl shadow-2xl border border-white/20">
+    <h2 class="text-2xl font-extrabold mb-6 text-center text-white drop-shadow flex items-center justify-center gap-3">
+      <i class="fas fa-chart-pie text-accent-green"></i>
+      لوحة المعلومات الرئيسية
+    </h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      
+      <!-- إجمالي المناطق -->
+      <div class="stat-card text-center p-6 glass-card rounded-xl shadow-lg">
+        <div class="stat-icon mb-4">
+          <i class="fas fa-map-marker-alt text-accent-blue text-3xl"></i>
+        </div>
+        <div class="stat-value text-3xl font-bold text-accent-green" id="totalRegions">--</div>
+        <div class="stat-label text-gray-300">إجمالي المناطق المنتجة</div>
+      </div>
+
+      <!-- متوفر للحصاد -->
+      <div class="stat-card text-center p-6 glass-card rounded-xl shadow-lg">
+        <div class="stat-icon mb-4">
+          <i class="fas fa-check-circle text-success text-3xl"></i>
+        </div>
+        <div class="stat-value text-3xl font-bold text-success" id="availableCount">--</div>
+        <div class="stat-label text-gray-300">متوفر للحصاد</div>
+      </div>
+
+      <!-- عدد المزارع -->
+      <div class="stat-card text-center p-6 glass-card rounded-xl shadow-lg">
+        <div class="stat-icon mb-4">
+          <i class="fas fa-tractor text-warning text-3xl"></i>
+        </div>
+        <div class="stat-value text-3xl font-bold text-warning" id="totalFarms">--</div>
+        <div class="stat-label text-gray-300">عدد المزارع المسجلة</div>
+      </div>
+
+      <!-- الإنتاج المتوقع -->
+      <div class="stat-card text-center p-6 glass-card rounded-xl shadow-lg">
+        <div class="stat-icon mb-4">
+          <i class="fas fa-weight-hanging text-accent-blue text-3xl"></i>
+        </div>
+        <div class="stat-value text-3xl font-bold text-accent-blue" id="totalQuantity">--</div>
+        <div class="stat-label text-gray-300">الإنتاج المتوقع (طن)</div>
+      </div>
+
+      <!-- متوسط السعر -->
+      <div class="stat-card text-center p-6 glass-card rounded-xl shadow-lg">
+        <div class="stat-icon mb-4">
+          <i class="fas fa-coins text-warning text-3xl"></i>
+        </div>
+        <div class="stat-value text-3xl font-bold text-warning" id="averagePrice">--</div>
+        <div class="stat-label text-gray-300">متوسط السعر (جنيه/كيلو)</div>
+      </div>
+
+      <!-- آخر تحديث -->
+      <div class="stat-card text-center p-6 glass-card rounded-xl shadow-lg">
+        <div class="stat-icon mb-4">
+          <i class="fas fa-clock text-accent-green text-3xl"></i>
+        </div>
+        <div class="stat-value text-2xl font-bold text-accent-green" id="lastUpdate">--</div>
+        <div class="stat-label text-gray-300">آخر تحديث</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
 
 <!-- 📊 توقع سعر مانجو كيت (مناطق طريق الإسكندرية الصحراوي) -->
 <section class="price-forecast-regional mb-12">
